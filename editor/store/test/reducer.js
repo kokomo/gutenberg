@@ -958,7 +958,6 @@ describe( 'state', () => {
 				focus: {},
 				isMultiSelecting: false,
 				isEnabled: true,
-				next: null,
 			} );
 		} );
 
@@ -1071,7 +1070,7 @@ describe( 'state', () => {
 				} ],
 			} );
 
-			expect( state3 ).toEqual( { start: 'ribs', end: 'chicken', next: 'ribs' } );
+			expect( state3 ).toEqual( { start: 'ribs', end: 'ribs', focus: {}, isMultiSelecting: false } );
 		} );
 
 		it( 'should not update the state if the block moved is already selected', () => {
@@ -1097,19 +1096,18 @@ describe( 'state', () => {
 				focus: { editable: 'citation' },
 				isMultiSelecting: false,
 				isEnabled: true,
-				next: null,
 			} );
 		} );
 
 		it( 'should update the focus and merge the existing state', () => {
-			const original = deepFreeze( { start: 'ribs', end: 'ribs', focus: {}, isMultiSelecting: true, next: null } );
+			const original = deepFreeze( { start: 'ribs', end: 'ribs', focus: {}, isMultiSelecting: true } );
 			const state = blockSelection( original, {
 				type: 'UPDATE_FOCUS',
 				uid: 'ribs',
 				config: { editable: 'citation' },
 			} );
 
-			expect( state ).toEqual( { start: 'ribs', end: 'ribs', focus: { editable: 'citation' }, isMultiSelecting: true, next: null } );
+			expect( state ).toEqual( { start: 'ribs', end: 'ribs', focus: { editable: 'citation' }, isMultiSelecting: true } );
 		} );
 
 		it( 'should replace the selected block', () => {

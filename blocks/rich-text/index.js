@@ -791,8 +791,6 @@ export default class RichText extends Component {
 				this.editor.selection.select( this.editor.getBody(), true );
 				this.editor.selection.collapse( false );
 			}
-		} else if ( isActive ) {
-			this.editor.getBody().blur();
 		}
 	}
 
@@ -876,6 +874,8 @@ export default class RichText extends Component {
 				offsetTop: scrollPosition.top,
 				alignWithTop: true,
 			} );
+
+			scrollPosition = null;
 		}
 	}
 
