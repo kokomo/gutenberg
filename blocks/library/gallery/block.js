@@ -39,7 +39,8 @@ class GalleryBlock extends Component {
 	constructor() {
 		super( ...arguments );
 
-		this.onUnselectImage = this.onUnselectImage.bind( this );
+		this.onSelectCaption = this.onSelectCaption.bind( this );
+		this.onSelectImage = this.onSelectImage.bind( this );
 		this.onSelectImages = this.onSelectImages.bind( this );
 		this.setLinkTo = this.setLinkTo.bind( this );
 		this.setColumnsNumber = this.setColumnsNumber.bind( this );
@@ -51,33 +52,38 @@ class GalleryBlock extends Component {
 
 		this.state = {
 			selectedImage: null,
+			captionSelected: false,
 		};
 	}
 
 	onSelectImage( index ) {
-		return ( event ) => {
-			// ignore clicks in the editable caption.
-			// Without this logic, text operations like selection, select / unselects the images.
-			if ( event.target.tagName === 'FIGCAPTION' ) {
-				return;
-			}
-
-			this.setState( {
-				selectedImage: index,
+		return () => {
+			this.setState( ( state ) => {
+				// no state change required
+				if ( state.selectedImage === index && ! state.captionSelected ) {
+					return;
+				}
+				return {
+					selectedImage: index,
+					captionSelected: false,
+				};
 			} );
 		};
 	}
 
-	onUnselectImage( event ) {
-		// ignore clicks in the editable caption.
-		// Without this logic, text operations like selection, select / unselects the images.
-		if ( event.target.tagName === 'FIGCAPTION' ) {
-			return;
-		}
-
-		this.setState( {
-			selectedImage: null,
-		} );
+	onSelectCaption( index ) {
+		return () => {
+			this.setState( ( state ) => {
+				// no state change required
+				if ( state.selectedImage === index && state.captionSelected ) {
+					return;
+				}
+				return {
+					selectedImage: index,
+					captionSelected: true,
+				};
+			} );
+		};
 	}
 
 	onRemoveImage( index ) {
@@ -149,6 +155,7 @@ class GalleryBlock extends Component {
 		if ( ! nextProps.isSelected && this.props.isSelected ) {
 			this.setState( {
 				selectedImage: null,
+				captionSelected: false,
 			} );
 		}
 	}
@@ -239,10 +246,11 @@ class GalleryBlock extends Component {
 							url={ img.url }
 							alt={ img.alt }
 							id={ img.id }
-							isSelected={ isSelected && this.state.selectedImage === index }
+							isSelectedImage={ isSelected && this.state.selectedImage === index }
+							isSelectedCaption={ isSelected && this.state.selectedImage === index && this.state.captionSelected }
 							onRemove={ this.onRemoveImage( index ) }
-							onSelect={ this.onSelectImage( index ) }
-							onUnselect={ this.onUnselectImage }
+							onSelectImage={ this.onSelectImage( index ) }
+							onSelectCaption={ this.onSelectCaption( index ) }
 							setAttributes={ ( attrs ) => this.setImageAttributes( index, attrs ) }
 							caption={ img.caption }
 						/>
